@@ -36,8 +36,8 @@ To deploy the infrastructure, follow these steps:
 3. Navigate to the `infra` directory.
 4. Run the following commands:
 ```
-Terraform init
-Terraform apply
+terraform init
+terraform apply
 ```
 5. Enter the required variables when prompted.
 
