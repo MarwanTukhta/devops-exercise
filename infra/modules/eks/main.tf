@@ -98,14 +98,16 @@ resource "aws_iam_role_policy_attachment" "nodes_ecr" {
 
 resource "aws_eks_node_group" "this" {
   cluster_name    = aws_eks_cluster.this.name
-  node_group_name = "${var.name_prefix}-nodes2"
+  node_group_name = "${var.name_prefix}-nodes"
   node_role_arn   = aws_iam_role.nodes.arn
   subnet_ids      = var.private_subnet_ids
 
+  instance_types = ["t3.medium"]
+
   scaling_config {
-    desired_size = 3
-    max_size     = 4
-    min_size     = 3
+    desired_size = 2
+    max_size     = 2
+    min_size     = 2
   }
 
   depends_on = [
@@ -114,3 +116,25 @@ resource "aws_eks_node_group" "this" {
     aws_iam_role_policy_attachment.nodes_ecr,
   ]
 }
+
+resource "aws_eks_node_group" "this2" {
+  cluster_name    = aws_eks_cluster.this.name
+  node_group_name = "${var.name_prefix}-nodes-2"
+  node_role_arn   = aws_iam_role.nodes.arn
+  subnet_ids      = var.private_subnet_ids
+
+  instance_types = ["c5.2xlarge"]
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 1
+    min_size     = 1
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.nodes_worker,
+    aws_iam_role_policy_attachment.nodes_cni,
+    aws_iam_role_policy_attachment.nodes_ecr,
+  ]
+}
+
