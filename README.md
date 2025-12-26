@@ -46,6 +46,7 @@ Terraform apply
 2. **Automated Backups**: Setting up automated backup solutions for databases to prevent data loss.
 3. **CI/CD Integration**: Implementing Continuous Integration and Continuous Deployment (CI/CD) pipelines to automate the deployment process and ensure consistent application delivery.
 4. **Use a shared internal ALB for multiple our internal services**: This would reduce the number of ALBs needed and optimize resource usage.
+5. **Autoscaling**: Implementing autoscaling policies for the EKS cluster to automatically adjust the number of nodes based on workload demands.
 
 
 # Conclusion
