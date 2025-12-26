@@ -26,7 +26,7 @@ The infrastructure consists of the following key components:
 2. **Security**: The use of private subnets for sensitive resources like databases enhances security by limiting exposure to the internet.
 3. **Load Balancing**: Application Load Balancers distribute incoming traffic efficiently, improving application performance and reliability.
 4. **High Availability**: Deploying resources across multiple availability zones ensures high availability and fault tolerance.
-5. **WAF Instead of DMZ**: Implementing a Web Application Firewall (WAF) provides robust protection against common web threats, making it a more modern and effective choice compared to traditional DMZ setups, in my opinion.
+5. **WAF Instead of DMZ**: A WAF is preferred over a DMZ because it inspects and blocks malicious application-layer (HTTP/HTTPS) attacks, whereas a DMZ only provides network-level isolation and cannot protect against modern web threats, in my opinion.
 6. **Internal ALBs for tools**: Using Inernal Application Load Balancers for tools like Grafana and Retool ensures that these monitoring tools are accessible only within the VPC, enhancing security while still providing necessary functionality, allowing us to use VPN or Bastion Host to access them securely.
 
 # Quick Start
