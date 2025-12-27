@@ -4,9 +4,10 @@ This project aims to deploy a scalable and secure web application infrastructure
 # Infrastructure Components
 The infrastructure consists of the following key components:
 - **Virtual Private Cloud (VPC)**: A logically isolated section of the cloud where resources are deployed.
-  - **Public Subnet**: Public subnets to host:
+  - **DMZ Subnet (Firewall)**: DMZ subnets to host:
+    - AWS Network Firewall endpoints
+  - **Protected Public Subnet**: Protected public subnets to host:
     - Internet-facing Application Load Balancer (ALB)
-    - Web Application Firewall (WAF)
     - NAT Gateway
   - **Private Compute Subnet**: Private subnets to host non-internet-facing resources:
     - EKS Cluster
@@ -26,7 +27,7 @@ The infrastructure consists of the following key components:
 2. **Security**: The use of private subnets for sensitive resources like databases enhances security by limiting exposure to the internet.
 3. **Load Balancing**: Application Load Balancers distribute incoming traffic efficiently, improving application performance and reliability.
 4. **High Availability**: Deploying resources across multiple availability zones ensures high availability and fault tolerance.
-5. **WAF Instead of DMZ**: A WAF is preferred for protecting web applications because it inspects and blocks application-layer (HTTP/HTTPS) attacks, while a DMZ mainly provides network-level isolation and by itself cannot detect or stop modern application-layer web attacks.
+5. **Network Firewall for public ingress**: The firewall in the DMZ enforces HTTP-only inbound traffic from the internet before it reaches the protected ALB subnets.
 6. **Internal ALBs for tools**: Using Inernal Application Load Balancers for tools like Grafana and Retool ensures that these monitoring tools are accessible only within the VPC, enhancing security while still providing necessary functionality, allowing us to use VPN or Bastion Host to access them securely.
 
 # Quick Start
@@ -47,6 +48,8 @@ terraform apply
 3. **CI/CD Integration**: Implementing Continuous Integration and Continuous Deployment (CI/CD) pipelines to automate the deployment process and ensure consistent application delivery.
 4. **Use a shared internal ALB for multiple our internal services**: This would reduce the number of ALBs needed and optimize resource usage.
 5. **Autoscaling**: Implementing autoscaling policies for the EKS cluster to automatically adjust the number of nodes based on workload demands.
+6. **Deploying a Bastion Host or VPN**: To securely access internal resources like Grafana and Retool without exposing them to the internet.
+7. **Deploying Atlantis for Terraform automation**: This would help in automating the terraform plan and apply steps, ensuring that infrastructure changes are reviewed and approved before deployment.
 
 
 # Conclusion

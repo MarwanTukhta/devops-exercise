@@ -38,6 +38,16 @@ variable "public_alb_name" {
   description = "Name for the public ALB created by the ALB controller."
 }
 
+variable "public_alb_security_group_id" {
+  type        = string
+  description = "Security group id for the public ALB."
+}
+
+variable "public_subnet_ids" {
+  type        = list(string)
+  description = "Protected public subnet ids for the internet-facing ALB."
+}
+
 variable "private_alb_name" {
   type        = string
   description = "Name for the private ALB created by the ALB controller."

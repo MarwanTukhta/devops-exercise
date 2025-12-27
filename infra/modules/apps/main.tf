@@ -192,7 +192,9 @@ resource "kubernetes_ingress_v1" "demo_api_internet" {
     annotations = {
       "kubernetes.io/ingress.class"                 = "alb"
       "alb.ingress.kubernetes.io/load-balancer-name" = var.public_alb_name
+      "alb.ingress.kubernetes.io/security-groups"    = var.public_alb_security_group_id
       "alb.ingress.kubernetes.io/scheme"             = "internet-facing"
+      "alb.ingress.kubernetes.io/subnets"            = join(",", var.public_subnet_ids)
       "alb.ingress.kubernetes.io/target-type"        = "ip"
       "alb.ingress.kubernetes.io/listen-ports"       = "[{\"HTTP\":80}]"
     }

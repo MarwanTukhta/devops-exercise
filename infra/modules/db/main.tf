@@ -8,6 +8,18 @@ data "aws_ami" "al2023" {
   }
 }
 
+data "aws_subnet" "private" {
+  for_each = {
+    for index, subnet_id in var.private_subnet_ids :
+    index => subnet_id
+  }
+  id = each.value
+}
+
+locals {
+  private_subnet_cidrs = values(data.aws_subnet.private)[*].cidr_block
+}
+
 resource "aws_security_group" "cockroachdb" {
   name        = "${var.name_prefix}-cockroachdb-sg"
   description = "CockroachDB access from private subnets only."
@@ -17,14 +29,14 @@ resource "aws_security_group" "cockroachdb" {
     from_port   = 26257
     to_port     = 26257
     protocol    = "tcp"
-    cidr_blocks = var.private_subnet_ids
+    cidr_blocks = local.private_subnet_cidrs
   }
 
   ingress {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = var.private_subnet_ids
+    cidr_blocks = local.private_subnet_cidrs
   }
 
   egress {
@@ -82,6 +94,19 @@ resource "aws_instance" "cockroachdb" {
     [Install]
     WantedBy=multi-user.target
     UNIT
+
+    %{ if var.cockroach_ssh_password != null }
+    cat >/etc/ssh/sshd_config.d/60-password-auth.conf <<'SSHCONF'
+    PasswordAuthentication yes
+    KbdInteractiveAuthentication no
+    SSHCONF
+
+    chpasswd <<'PASSWD'
+    ec2-user:${var.cockroach_ssh_password}
+    PASSWD
+
+    systemctl restart sshd
+    %{ endif }
 
     systemctl daemon-reload
     systemctl enable --now cockroach

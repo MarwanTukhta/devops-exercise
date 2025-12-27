@@ -21,6 +21,7 @@ module "db" {
   vpc_id                   = module.network.vpc_id
   private_subnet_ids       = module.network.private_subnet_ids
   db_subnet_ids            = module.network.private_db_subnet_ids
+  cockroach_ssh_password   = var.cockroach_ssh_password
 }
 
 module "eks" {
@@ -194,6 +195,8 @@ module "apps" {
   vpc_id                   = module.network.vpc_id
   aws_region               = var.aws_region
   public_alb_name          = var.public_alb_name
+  public_alb_security_group_id = module.network.public_alb_security_group_id
+  public_subnet_ids        = module.network.public_subnet_ids
   private_alb_name         = var.private_alb_name
   alb_controller_role_arn  = aws_iam_role.alb_controller.arn
   retool_encryption_key    = var.retool_encryption_key
@@ -204,48 +207,6 @@ module "apps" {
 data "aws_lb" "public_alb" {
   name       = var.public_alb_name
   depends_on = [module.apps]
-}
-
-resource "aws_wafv2_web_acl" "public_alb" {
-  name  = "${var.name_prefix}-public-waf"
-  scope = "REGIONAL"
-
-  default_action {
-    allow {}
-  }
-
-  rule {
-    name     = "AWSManagedRulesCommonRuleSet"
-    priority = 1
-
-    override_action {
-      none {}
-    }
-
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesCommonRuleSet"
-        vendor_name = "AWS"
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${var.name_prefix}-waf-common"
-      sampled_requests_enabled   = true
-    }
-  }
-
-  visibility_config {
-    cloudwatch_metrics_enabled = true
-    metric_name                = "${var.name_prefix}-waf"
-    sampled_requests_enabled   = true
-  }
-}
-
-resource "aws_wafv2_web_acl_association" "public_alb" {
-  resource_arn = data.aws_lb.public_alb.arn
-  web_acl_arn  = aws_wafv2_web_acl.public_alb.arn
 }
 
 module "observability" {

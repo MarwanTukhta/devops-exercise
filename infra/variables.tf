@@ -1,7 +1,7 @@
 variable "name_prefix" {
   type        = string
   description = "Prefix for resource names."
-  default     = "malaa-devops-exercise"
+  default     = "malaa-exercise"
 }
 
 variable "aws_region" {
@@ -26,6 +26,13 @@ variable "private_alb_name" {
   type        = string
   description = "Name for the private ALB created by the ALB controller."
   default     = "malaa-private-alb"
+}
+
+variable "cockroach_ssh_password" {
+  type        = string
+  description = "Password for ec2-user SSH login to the DB instance."
+  sensitive   = true
+  default     = "dbpass123"
 }
 
 variable "retool_encryption_key" {

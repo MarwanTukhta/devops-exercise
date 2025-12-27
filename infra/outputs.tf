@@ -5,7 +5,12 @@ output "vpc_id" {
 
 output "public_subnet_ids" {
   value       = module.network.public_subnet_ids
-  description = "Public subnet ids."
+  description = "Protected public subnet ids."
+}
+
+output "dmz_subnet_ids" {
+  value       = module.network.dmz_subnet_ids
+  description = "DMZ firewall subnet ids."
 }
 
 output "private_subnet_ids" {
@@ -23,14 +28,9 @@ output "public_alb_name" {
   description = "Public ALB name."
 }
 
-output "alb_controller_role_arn" {
-  value       = aws_iam_role.alb_controller.arn
-  description = "IAM role ARN for the AWS Load Balancer Controller."
-}
-
-output "public_waf_arn" {
-  value       = aws_wafv2_web_acl.public_alb.arn
-  description = "WAF ACL ARN for the public ALB."
+output "public_alb_security_group_id" {
+  value       = module.network.public_alb_security_group_id
+  description = "Security group id for the public ALB in protected subnets."
 }
 
 output "cockroachdb_instance_id" {

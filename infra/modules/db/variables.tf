@@ -35,3 +35,10 @@ variable "cockroach_root_volume_gb" {
   description = "Root volume size (GB) for CockroachDB."
   default     = 50
 }
+
+variable "cockroach_ssh_password" {
+  type        = string
+  description = "Password for ec2-user SSH login; when set, enables password auth."
+  sensitive   = true
+  default     = null
+}
